@@ -5,14 +5,8 @@ async function getScreenshots() {
     const loading = document.getElementById('loading');
     const container = document.getElementById('screenshots-container');
     
-    // 输入验证
     if (!urlInput.value) {
-        alert('Please enter a valid YouTube URL');
-        return;
-    }
-
-    if (!urlInput.value.includes('youtube.com/') && !urlInput.value.includes('youtu.be/')) {
-        alert('Please enter a valid YouTube URL');
+        alert('Please enter a YouTube URL');
         return;
     }
 
@@ -31,24 +25,21 @@ async function getScreenshots() {
             })
         });
 
-        if (!response.ok) {
-            throw new Error(`Analysis failed: ${response.status}`);
-        }
-
         const data = await response.json();
+        console.log('API Response:', data);  // 添加调试信息
+
         if (data.status === 'success') {
             displayResults(data.data);
         } else {
             throw new Error(data.message || 'Analysis failed');
         }
     } catch (error) {
+        console.error('Error:', error);  // 添加错误日志
         container.innerHTML = `
             <div class="error-message">
                 <p>Error: ${error.message}</p>
-                <button onclick="getScreenshots()" class="retry-button">Retry</button>
             </div>
         `;
-        alert('Error: ' + error.message);
     } finally {
         loading.style.display = 'none';
     }
